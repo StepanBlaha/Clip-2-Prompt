@@ -8,3 +8,6 @@ env/
 
 # Ignore backup folder
 backup/
+
+# Ignore pycache files
+__pycache__/
