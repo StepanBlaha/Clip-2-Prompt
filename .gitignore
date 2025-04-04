@@ -5,3 +5,6 @@ env/
 
 # Ignore environment variable files
 .env
+
+# Ignore backup folder
+backup/
