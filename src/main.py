@@ -8,6 +8,7 @@ from openai import OpenAI
 from dotenv import load_dotenv, dotenv_values
 
 
+
 load_dotenv()
 api_key = os.getenv("OPENAI_KEY")
 client = OpenAI(
@@ -15,24 +16,34 @@ client = OpenAI(
 )
 
 
-app_dict = {
+app_state = {
     "copy_running": False,
-    "user_inp": "tt.txt",
+    "user_log_file": "tt.txt",
     "ai_running": False,
     "summarize": False,
     "translate": False,
     "language": "en",
     "lang_running": False,
 }
+
+def get_new_clipboard(last_text):
+    """Get new clipboard text
+
+    Args:
+        last_text (string): last text from clipboard
+    """
+    text = pyperclip.paste().strip()
+    return text if text and text != last_text else None
+
 def set_lang():
     """
     Set the language for translation
     """
     # Set the flags for modes
-    app_dict["lang_running"] = True
-    app_dict["copy_running"] = False
-    app_dict["ai_running"] = False
-    app_dict["summarize"] = False
+    app_state["lang_running"] = True
+    app_state["copy_running"] = False
+    app_state["ai_running"] = False
+    app_state["summarize"] = False
     
     pyperclip.copy("")
     threading.Thread(target=lang_run, daemon=True).start()
@@ -42,16 +53,16 @@ def lang_run():
     """
     Loop for setting language for translating
     """
-    while app_dict["lang_running"]:
+    while app_state["lang_running"]:
         copied_text = pyperclip.paste().strip()
         # Make sure the clipboard isnt empty
         if not copied_text:
             time.sleep(1)
             continue
         # Set the language for translation
-        app_dict["language"] = copied_text
+        app_state["language"] = copied_text
         print(f"Language set to {copied_text}")
-        app_dict["lang_running"] = False
+        app_state["lang_running"] = False
         break
 
 def ai_message(message):
@@ -64,10 +75,10 @@ def ai_message(message):
     Returns:
         string: Chatgpt reply
     """
-    if app_dict["summarize"]:
+    if app_state["summarize"]:
         role_message = "Summarize the text i send you into easy to understan article" 
-    elif app_dict["translate"]:
-        role_message = f"Translate the text i send you to {app_dict['language']} language"
+    elif app_state["translate"]:
+        role_message = f"Translate the text i send you to {app_state['language']} language"
     else:
         role_message = "Tell me only the answer without any go arounds. If i send code or ask for code send only the code"
     completion = client.chat.completions.create(
@@ -99,25 +110,25 @@ def ai_on(summary=False, translate=False):
     Args:
         summary (bool, optional): If True, it will summarize the message. Defaults to False.
     """
-    if app_dict["ai_running"]:
+    if app_state["ai_running"]:
         print("AI mode is already running")
         return
     # Set flags for all the modes
-    app_dict["copy_running"] = False
-    app_dict["ai_running"] = True
-    app_dict["summarize"] = summary
-    app_dict["translate"] = translate
-    app_dict["lang_running"] = False
+    app_state["copy_running"] = False
+    app_state["ai_running"] = True
+    app_state["summarize"] = summary
+    app_state["translate"] = translate
+    app_state["lang_running"] = False
     # Clear clipboard
     pyperclip.copy("")
     # Run AI in a separate thread
     threading.Thread(target=ai_run, daemon=True).start()
     
     # Debug
-    if app_dict["summarize"]:
+    if app_state["summarize"]:
         print("Summary mode starting...")
-    elif app_dict["translate"]:
-        print(f"Translate mode starting... {app_dict['language']}")
+    elif app_state["translate"]:
+        print(f"Translate mode starting... {app_state['language']}")
     else:
         print("AI mode starting...")
 
@@ -126,9 +137,9 @@ def ai_off():
     Stops the AI mode
     """
     # Stop summary mode
-    app_dict["summarize"] = False
+    app_state["summarize"] = False
     # Stop AI mode
-    app_dict["ai_running"] = False
+    app_state["ai_running"] = False
     print('Exiting AI mode...')
 
 def ai_run():
@@ -138,21 +149,13 @@ def ai_run():
     print("AI running...")
     last_text = ""
     ai_response = ""
-    while app_dict["ai_running"]:
-        copied_text = pyperclip.paste().strip()
-        # Make sure the clipboard isnt empty
-        if not copied_text:
+    while app_state["ai_running"]:
+        copied_text = get_new_clipboard(last_text)
+        # Make sure to not send ai reply back to ai nd that copied text is not empty
+        if not copied_text or copied_text == ai_response:
             time.sleep(1)
             continue
-        # Make sure the clipboard content isnt the same
-        if copied_text == last_text:
-            time.sleep(1)
-            continue
-        # Make sure to not send ai reply back to ai
-        if copied_text == ai_response:
-            time.sleep(1)
-            continue
-
+        
         # Update last test
         last_text = copied_text
 
@@ -172,11 +175,11 @@ def copy_on():
     Starts the copy mode
     """
     # Set the flags for modes
-    app_dict["ai_running"] = False
-    app_dict["copy_running"] = True
-    app_dict["lang_running"] = False
-    app_dict["summarize"] = False
-    app_dict["translate"] = False
+    app_state["ai_running"] = False
+    app_state["copy_running"] = True
+    app_state["lang_running"] = False
+    app_state["summarize"] = False
+    app_state["translate"] = False
     threading.Thread(target=copy_run, daemon=True).start()
     print("Starting copy mode...")
 
@@ -184,7 +187,7 @@ def copy_off():
     """
     Stops the copy mode
     """
-    app_dict["copy_running"] = False
+    app_state["copy_running"] = False
     print('Exiting copy mode...')
 
 def copy_run():
@@ -193,14 +196,10 @@ def copy_run():
     """ 
     last_text = ""
 
-    while app_dict["copy_running"]:
-        copied_text = pyperclip.paste().strip()
-        # Make sure the clipboard isnt empty
+    while app_state["copy_running"]:
+        copied_text = get_new_clipboard(last_text)
+        # Make sure the clipboard isnt empty and same as the last one
         if not copied_text:
-            time.sleep(1)
-            continue
-        # Make sure the clipboard content isnt the same
-        if copied_text == last_text:
             time.sleep(1)
             continue
 
@@ -208,7 +207,7 @@ def copy_run():
         last_text = copied_text
 
         # Write into file
-        with open(app_dict["user_inp"], "a") as f:
+        with open(app_state["user_log_file"], "a") as f:
             f.write(copied_text + '\n')
 
         # Timeout
