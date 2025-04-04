@@ -6,7 +6,9 @@ import time
 import threading
 from openai import OpenAI
 from dotenv import load_dotenv, dotenv_values
-
+import pystray
+from PIL import Image
+import sys
 
 
 load_dotenv()
@@ -96,12 +98,15 @@ def ai_message(message):
     )
     return completion.choices[0].message.content
 
-def exit_script():
+def exit_script(icon=None, item=None):
     """
     Exits script
     """
     print("Script closing...")
-    exit()
+    if icon is not None:
+        icon.stop()
+        time.sleep(1)  
+    os._exit(0)  
 
 def ai_on(summary=False, translate=False):
     """
@@ -125,9 +130,10 @@ def ai_on(summary=False, translate=False):
     threading.Thread(target=ai_run, daemon=True).start()
     
     # Debug
-    if app_state["summarize"]:
+    print(app_state["summarize"])
+    if app_state["summarize"] == True:
         print("Summary mode starting...")
-    elif app_state["translate"]:
+    if app_state["translate"]:
         print(f"Translate mode starting... {app_state['language']}")
     else:
         print("AI mode starting...")
@@ -138,6 +144,7 @@ def ai_off():
     """
     # Stop summary mode
     app_state["summarize"] = False
+    app_state["translate"] = False
     # Stop AI mode
     app_state["ai_running"] = False
     print('Exiting AI mode...')
@@ -213,7 +220,25 @@ def copy_run():
         # Timeout
         time.sleep(1)
 
-
+def create_menu():
+    """
+    Creates a system tray menu
+    """
+    # Get all the items for the menu
+    copy_on_item = pystray.MenuItem("Copy on", copy_on)
+    copy_off_item = pystray.MenuItem("Copy off", copy_off)
+    ai_on_item = pystray.MenuItem("AI on", lambda icon, item: ai_on())
+    ai_off_item = pystray.MenuItem("AI off", ai_off)
+    exit_script_item = pystray.MenuItem("Exit", exit_script)
+    summary_item = pystray.MenuItem("AI summary mode", lambda icon, item: ai_on(summary=True))
+    translate_item = pystray.MenuItem("AI Translate mode", lambda icon, item: ai_on(translate=True))
+    set_language_item = pystray.MenuItem("Set language", set_lang)
+    # Create the menu
+    menu = (copy_on_item, copy_off_item, ai_on_item, ai_off_item, summary_item, translate_item, set_language_item, exit_script_item)
+    image = Image.open('icon.png')
+    icon = pystray.Icon("main", image, "Clip-2-Prompt", menu)
+    icon.run()
+    
 def run():
     # Set your custom hotkeys
     hotkeys = {
@@ -226,10 +251,11 @@ def run():
         '<ctrl>+<alt>+l': lambda: ai_on(translate=True), # Start ai with translate mode
         '<ctrl>+<alt>+n': set_lang, # Sets the language for translation
     }
+    # Create a thread for the menu to avoid blocking the main thread
+    threading.Thread(target=create_menu, daemon=True).start()
+    # Start the hotkey listener
     with keyboard.GlobalHotKeys(hotkeys) as listener:
         listener.join()
 
 if __name__ == "__main__":
     run()
-
-
