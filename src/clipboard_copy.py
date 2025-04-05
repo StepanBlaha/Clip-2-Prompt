@@ -33,7 +33,7 @@ def copy_off():
     app_state["copy_running"] = False
     print('Exiting copy mode...')
 
-def copy_run(app_state):
+def copy_run():
     """
     Copy loop
     """ 
