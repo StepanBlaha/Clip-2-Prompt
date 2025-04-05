@@ -1,4 +1,4 @@
-# Clip-2-Prompt
+# Clip-2-Prompt :clipboard:
 Easy to use tool for when you need a bit of help... :smirk:<br>
 Make secret ai calls, translate and summarize copied text or just copy clipboard straight to a file.<br>
 
@@ -23,7 +23,7 @@ pip install -r requirements.txt
 ```
 
 ## Configuration
-Open config.py file and replace "OPENAI_KEY" with you key
+Open config.py file and replace "OPENAI_KEY" with your key :key::
 ```
 api_key = os.getenv("OPENAI_KEY")
 ```
