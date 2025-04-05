@@ -7,9 +7,7 @@ import time
 from config import api_key, app_state
 from clipboard_copy import get_new_clipboard
 
-client = OpenAI(
-    api_key=api_key,
-)
+client = OpenAI(api_key=api_key,)
 
 def ai_message(message):
     """Call to chatgpt
