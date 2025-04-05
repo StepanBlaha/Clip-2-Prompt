@@ -1,16 +1,15 @@
 # Clip-2-Prompt
-Easy to use tool for when you need a bit of help...<br>
+Easy to use tool for when you need a bit of help... :smirk:<br>
 Make secret ai calls, translate and summarize copied text or just copy clipboard straight to a file.<br>
-
 
 ## Functions
 - Copy mode - copy straight to file without pasting
 - AI mode - Make hidden calls to chatgpt
-- AI summary mode - Get ai summary of copied code
-- AI translate mode - Translate copied text to desired language
+- AI summary mode - Get ai summary of copied code :sparkles:
+- AI translate mode - Translate copied text to desired language :speech_balloon:
 - Hotkeys - Create custom hotkeys for the different modes
-- Windows system tray menu - For easy access if you dont want to use hotkeys
-
+- Windows system tray menu - For easy access if you dont want to use hotkeys :pushpin:
+ 
 ## Requirements
 - Open AI API key
 
@@ -28,7 +27,7 @@ Open config.py file and replace "OPENAI_KEY" with you key
 ```
 api_key = os.getenv("OPENAI_KEY")
 ```
-If you want you can change the output file for copy mode in config.py by changing "user_log_file": "sample.txt":
+If you want you can change the output file :file_folder: for copy mode in config.py by changing "user_log_file": "sample.txt":
 ```
 app_state = {
     "copy_running": False,
@@ -60,26 +59,26 @@ python src/main.py
 ```
 
 ## Usage 
-### Copy mode
+### Copy mode :clipboard:
 - Copy text from clipboard to desired file
 - To start run copy_on (Copy mode off hotkey or menu button)
 - To end run copy_off (Copy mode off hotkey or menu button)
 
-### AI mode
+### AI mode :bulb:
 - Send text from clipboard to Chatgpt and get the response back to clipboard
 - To start run ai_on (AI mode on hotkey or menu button)
 - To end run ai_off (AI mode off hotkey or menu button)
 
-### Summary mode
+### Summary mode :bookmark_tabs:
 - Send text from clipboard to Chatgpt and get the summary of it back to clipboard
 - To start run ai_on in summary mode (Summary mode on hotkey or menu button)
 - To end run ai_off (AI mode off hotkey or menu button)
 
-### Translate mode
+### Translate mode :speech_balloon:
 - Send text from clipboard to Chatgpt and get the translation of it back to clipboard
 - To setup language run set_lang and copy a language you want to translate into (Set language hotkey or menu button)
 - To start run ai_on in translate mode (Translate mode on hotkey or menu button)
 - To end run ai_off (AI mode off hotkey or menu button)
 
-### Script exit
+### Script exit :x:
 - To end the script either press the exit script hotkey or button
