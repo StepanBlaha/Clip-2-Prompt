@@ -1,5 +1,7 @@
 # Clip-2-Prompt
-Tool for copying text to file without having to paste it
+Easy to use tool for when you need a bit of help...<br>
+Make secret ai calls, translate and summarize copied text or just copy clipboard straight to a file.<br>
+
 
 ## Functions
 - Copy mode - copy straight to file without pasting
@@ -56,3 +58,28 @@ You can also create custom hotkeys in hotkeys.py:
 ```
 python src/main.py
 ```
+
+## Usage 
+### Copy mode
+- Copy text from clipboard to desired file
+- To start run copy_on (Copy mode off hotkey or menu button)
+- To end run copy_off (Copy mode off hotkey or menu button)
+
+### AI mode
+- Send text from clipboard to Chatgpt and get the response back to clipboard
+- To start run ai_on (AI mode on hotkey or menu button)
+- To end run ai_off (AI mode off hotkey or menu button)
+
+### Summary mode
+- Send text from clipboard to Chatgpt and get the summary of it back to clipboard
+- To start run ai_on in summary mode (Summary mode on hotkey or menu button)
+- To end run ai_off (AI mode off hotkey or menu button)
+
+### Translate mode
+- Send text from clipboard to Chatgpt and get the translation of it back to clipboard
+- To setup language run set_lang and copy a language you want to translate into (Set language hotkey or menu button)
+- To start run ai_on in translate mode (Translate mode on hotkey or menu button)
+- To end run ai_off (AI mode off hotkey or menu button)
+
+### Script exit
+- To end the script either press the exit script hotkey or button
