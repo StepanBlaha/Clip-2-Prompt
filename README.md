@@ -3,7 +3,7 @@ Easy to use tool for when you need a bit of help... :smirk:<br>
 Make secret ai calls, translate and summarize copied text or just copy clipboard straight to a file.<br>
 
 ## Functions
-- Copy mode - copy straight to file without pasting
+- Copy mode - Copy straight to file without pasting
 - AI mode - Make hidden calls to chatgpt
 - AI summary mode - Get ai summary of copied code :sparkles:
 - AI translate mode - Translate copied text to desired language :speech_balloon:
