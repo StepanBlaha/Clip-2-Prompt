@@ -13,7 +13,7 @@ Make secret ai calls, translate and summarize copied text or just copy clipboard
 ## Requirements
 - Open AI API key
 
-## Instalation Guide
+## Installation Guide
 ```
 git clone https://github.com/StepanBlaha/Clip-2-Prompt/
 cd Clip-2-Prompt
